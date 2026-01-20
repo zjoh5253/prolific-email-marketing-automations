@@ -1,0 +1,47 @@
+{
+  "name": "prolific-email-marketing-automations",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Email marketing automation platform for managing campaigns across multiple ESPs",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "docker:up": "docker compose up -d && docker compose logs -f",
+    "docker:up:build": "docker compose up -d --build && docker compose logs -f",
+    "docker:down": "docker compose down",
+    "docker:down:volumes": "docker compose down -v",
+    "docker:logs": "docker compose logs -f",
+    "docker:logs:backend": "docker compose logs -f backend worker",
+    "docker:logs:frontend": "docker compose logs -f frontend",
+    "docker:ps": "docker compose ps",
+    "docker:reset": "docker compose down -v && docker compose up -d --build",
+    "docker:restart": "docker compose restart",
+    "docker:shell:backend": "docker compose exec backend sh",
+    "docker:shell:frontend": "docker compose exec frontend sh",
+    "docker:shell:postgres": "docker compose exec postgres psql -U prolific -d prolific_email",
+    "docker:shell:redis": "docker compose exec redis redis-cli",
+    "docker:prod:up": "docker compose -f docker-compose.prod.yml up -d",
+    "docker:prod:up:build": "docker compose -f docker-compose.prod.yml up -d --build",
+    "docker:prod:down": "docker compose -f docker-compose.prod.yml down",
+    "docker:prod:logs": "docker compose -f docker-compose.prod.yml logs -f",
+    "docker:prod:migrate": "docker compose -f docker-compose.prod.yml --profile migration up db-migrate",
+    "db:migrate": "docker compose exec backend npx prisma migrate dev",
+    "db:migrate:create": "docker compose exec backend npx prisma migrate dev --name",
+    "db:seed": "docker compose exec backend npx prisma db seed",
+    "db:studio": "docker compose exec backend npx prisma studio",
+    "db:reset": "docker compose exec backend npx prisma migrate reset --force",
+    "db:generate": "docker compose exec backend npx prisma generate",
+    "clean:docker": "docker system prune -af && docker volume prune -f"
+  },
+  "keywords": [
+    "email-marketing",
+    "automation",
+    "mailchimp",
+    "klaviyo",
+    "hubspot"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}

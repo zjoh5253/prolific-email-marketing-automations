@@ -1,0 +1,486 @@
+// Prisma schema for Prolific Email Marketing Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Authentication & Users
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          UserRole  @default(MEMBER)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  auditLogs     AuditLog[]
+  approvals     CampaignApproval[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ============================================
+// Clients & Credentials
+// ============================================
+
+model Client {
+  id              String         @id @default(uuid())
+  name            String
+  slug            String         @unique
+  platform        EmailPlatform
+  industry        String?
+  timezone        String         @default("America/New_York")
+  status          ClientStatus   @default(ACTIVE)
+  contextMarkdown String?        @db.Text
+  lastSyncAt      DateTime?
+  syncStatus      SyncStatus     @default(PENDING)
+  syncError       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  credentials      ClientCredential?
+  campaigns        Campaign[]
+  lists            AudienceList[]
+  assets           Asset[]
+  cadences         Cadence[]
+  alerts           Alert[]
+  contextSnippets  ContextSnippet[]
+  activityLogs     AuditLog[]
+
+  @@map("clients")
+}
+
+enum ClientStatus {
+  ACTIVE
+  PAUSED
+  CHURNED
+  ONBOARDING
+}
+
+enum EmailPlatform {
+  MAILCHIMP
+  KLAVIYO
+  HUBSPOT
+  ACTIVECAMPAIGN
+  CONSTANTCONTACT
+  BREVO
+  OTHER
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCING
+  SUCCESS
+  FAILED
+}
+
+model ClientCredential {
+  id              String    @id @default(uuid())
+  clientId        String    @unique
+  encryptedData   String    @db.Text
+  iv              String
+  authTag         String
+  isValid         Boolean   @default(true)
+  lastVerifiedAt  DateTime?
+  verifyError     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("client_credentials")
+}
+
+model ContextSnippet {
+  id        String      @id @default(uuid())
+  clientId  String
+  type      ContextType
+  title     String
+  content   String      @db.Text
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("context_snippets")
+}
+
+enum ContextType {
+  BRAND_VOICE
+  AUDIENCE_PERSONA
+  GOAL
+  COMPETITOR
+  PRODUCT_INFO
+  SEASONAL_NOTE
+  DO_NOT_MENTION
+}
+
+// ============================================
+// Campaigns & Versions
+// ============================================
+
+model Campaign {
+  id                 String         @id @default(uuid())
+  clientId           String
+  platformCampaignId String?
+  name               String
+  subjectLine        String?
+  previewText        String?
+  fromName           String?
+  fromEmail          String?
+  bodyCopyHtml       String?        @db.Text
+  bodyCopyPlain      String?        @db.Text
+  status             CampaignStatus @default(DRAFT)
+  approvalStatus     ApprovalStatus @default(PENDING)
+  scheduledAt        DateTime?
+  sentAt             DateTime?
+  metrics            Json?
+  version            Int            @default(1)
+  parentCampaignId   String?
+  syncedAt           DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  client    Client             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  versions  CampaignVersion[]
+  approvals CampaignApproval[]
+  lists     CampaignList[]
+
+  @@unique([clientId, platformCampaignId])
+  @@index([clientId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("campaigns")
+}
+
+enum CampaignStatus {
+  IDEA
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  SCHEDULED
+  SENDING
+  SENT
+  PAUSED
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  INTERNAL_APPROVED
+  CLIENT_APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+}
+
+model CampaignVersion {
+  id           String   @id @default(uuid())
+  campaignId   String
+  versionNum   Int
+  subjectLine  String?
+  previewText  String?
+  bodyCopyHtml String?  @db.Text
+  bodyCopyPlain String? @db.Text
+  changes      Json?
+  createdById  String?
+  createdAt    DateTime @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, versionNum])
+  @@map("campaign_versions")
+}
+
+model CampaignApproval {
+  id         String         @id @default(uuid())
+  campaignId String
+  userId     String
+  action     ApprovalAction
+  comments   String?        @db.Text
+  createdAt  DateTime       @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@index([campaignId])
+  @@map("campaign_approvals")
+}
+
+enum ApprovalAction {
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
+}
+
+model CampaignList {
+  id         String @id @default(uuid())
+  campaignId String
+  listId     String
+
+  campaign Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  list     AudienceList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, listId])
+  @@map("campaign_lists")
+}
+
+// ============================================
+// Lists & Audiences
+// ============================================
+
+model AudienceList {
+  id             String    @id @default(uuid())
+  clientId       String
+  platformListId String?
+  name           String
+  memberCount    Int       @default(0)
+  growthRate30d  Float?
+  churnRate30d   Float?
+  engagementTier String?
+  isActive       Boolean   @default(true)
+  syncedAt       DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  client    Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  campaigns CampaignList[]
+
+  @@unique([clientId, platformListId])
+  @@index([clientId])
+  @@map("audience_lists")
+}
+
+// ============================================
+// Assets
+// ============================================
+
+model Asset {
+  id        String    @id @default(uuid())
+  clientId  String
+  type      AssetType
+  name      String
+  url       String?
+  filePath  String?
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("assets")
+}
+
+enum AssetType {
+  LOGO
+  HEADER_IMAGE
+  PRODUCT_IMAGE
+  BRAND_COLORS
+  EMAIL_TEMPLATE
+  SIGNATURE
+}
+
+// ============================================
+// Cadences
+// ============================================
+
+model Cadence {
+  id           String           @id @default(uuid())
+  clientId     String
+  name         String
+  description  String?
+  frequency    CadenceFrequency
+  campaignType String?
+  dayOfWeek    Int?
+  dayOfMonth   Int?
+  timeOfDay    String?
+  nextSendDate DateTime?
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("cadences")
+}
+
+enum CadenceFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  CUSTOM
+}
+
+// ============================================
+// Alerts
+// ============================================
+
+model Alert {
+  id          String        @id @default(uuid())
+  clientId    String?
+  type        AlertType
+  severity    AlertSeverity
+  title       String
+  message     String        @db.Text
+  metadata    Json?
+  isRead      Boolean       @default(false)
+  isDismissed Boolean       @default(false)
+  resolvedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime      @default(now())
+
+  client Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([isRead, isDismissed])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+enum AlertType {
+  CREDENTIAL_FAILURE
+  CREDENTIAL_EXPIRING
+  DELIVERABILITY_DROP
+  HIGH_UNSUBSCRIBES
+  HIGH_SPAM_COMPLAINTS
+  MISSED_SEND
+  SEND_LIMIT_WARNING
+  SYNC_FAILURE
+  ANOMALY_DETECTED
+  SYSTEM_ERROR
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+// ============================================
+// Audit Logging
+// ============================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  clientId   String?
+  action     String
+  entityType String
+  entityId   String?
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user   User?   @relation(fields: [userId], references: [id])
+  client Client? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([clientId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================
+// Industry Benchmarks
+// ============================================
+
+model IndustryBenchmark {
+  id           String   @id @default(uuid())
+  industry     String
+  metric       String
+  value        Float
+  sampleSize   Int
+  calculatedAt DateTime @default(now())
+
+  @@unique([industry, metric])
+  @@map("industry_benchmarks")
+}
+
+// ============================================
+// Job Tracking
+// ============================================
+
+model JobRun {
+  id          String    @id @default(uuid())
+  jobName     String
+  queueName   String
+  status      JobStatus @default(PENDING)
+  payload     Json?
+  result      Json?
+  error       String?   @db.Text
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([jobName])
+  @@index([status])
+  @@index([createdAt])
+  @@map("job_runs")
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  RETRYING
+}
+
+// ============================================
+// Notification Settings
+// ============================================
+
+model NotificationSetting {
+  id               String   @id @default(uuid())
+  emailEnabled     Boolean  @default(true)
+  emailRecipients  String[] @default([])
+  slackEnabled     Boolean  @default(false)
+  slackWebhookUrl  String?
+  slackChannel     String?
+  alertTypes       AlertType[]
+  minSeverity      AlertSeverity @default(WARNING)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("notification_settings")
+}

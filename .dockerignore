@@ -1,0 +1,76 @@
+# =============================================================================
+# Root .dockerignore - applies to all builds
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Documentation
+*.md
+!README.md
+docs/
+LICENSE
+
+# Docker (prevent recursive copy)
+docker-compose*.yml
+.dockerignore
+Dockerfile*
+
+# Environment files (never include in image)
+.env
+.env.*
+!.env.example
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+**/__tests__
+**/coverage
+**/.nyc_output
+
+# Build artifacts (we build inside container)
+**/dist
+**/build
+**/.next
+**/.nuxt
+
+# Dependencies (we install inside container)
+**/node_modules
+**/.npm
+**/.pnpm-store
+
+# Logs
+**/*.log
+**/logs
+
+# Temporary files
+**/tmp
+**/temp
+**/.cache
+
+# Frontend-specific
+frontend/.env.local
+frontend/.env.*.local
+
+# Backend-specific
+backend/.env
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Uploads (local asset storage)
+uploads/
