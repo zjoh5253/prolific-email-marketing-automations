@@ -6,6 +6,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ClientsPage } from '@/pages/ClientsPage';
 import { ClientDetailPage } from '@/pages/ClientDetailPage';
+import { ClientFormPage } from '@/pages/ClientFormPage';
 import { CampaignsPage } from '@/pages/CampaignsPage';
 import { CalendarPage } from '@/pages/CalendarPage';
 import { AlertsPage } from '@/pages/AlertsPage';
@@ -38,6 +39,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="clients" element={<ClientsPage />} />
+          <Route path="clients/new" element={<ClientFormPage />} />
           <Route path="clients/:id" element={<ClientDetailPage />} />
           <Route path="campaigns" element={<CampaignsPage />} />
           <Route path="calendar" element={<CalendarPage />} />
