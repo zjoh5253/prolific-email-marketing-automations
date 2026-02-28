@@ -1,6 +1,9 @@
 import { EmailPlatformAdapter } from './base/EmailPlatformAdapter.js';
 import { MailchimpAdapter } from './mailchimp/MailchimpAdapter.js';
 import { KlaviyoAdapter } from './klaviyo/KlaviyoAdapter.js';
+import { HubSpotAdapter } from './hubspot/HubSpotAdapter.js';
+import { ActiveCampaignAdapter } from './activecampaign/ActiveCampaignAdapter.js';
+import { BrevoAdapter } from './brevo/BrevoAdapter.js';
 import { ServiceTitanAdapter } from './servicetitan/ServiceTitanAdapter.js';
 import { BeehiivAdapter } from './beehiiv/BeehiivAdapter.js';
 import { ConstantContactAdapter } from './constantcontact/ConstantContactAdapter.js';
@@ -33,20 +36,17 @@ export function createPlatformAdapter(
       return new KlaviyoAdapter(clientId, credentials);
 
     case 'HUBSPOT':
-      // TODO: Implement HubSpotAdapter
-      throw new ValidationError(`HubSpot adapter not yet implemented`);
+      return new HubSpotAdapter(clientId, credentials);
 
     case 'ACTIVECAMPAIGN':
-      // TODO: Implement ActiveCampaignAdapter
-      throw new ValidationError(`ActiveCampaign adapter not yet implemented`);
+      return new ActiveCampaignAdapter(clientId, credentials);
 
     case 'CONSTANT_CONTACT':
     case 'CONSTANTCONTACT':
       return new ConstantContactAdapter(clientId, credentials);
 
     case 'BREVO':
-      // TODO: Implement BrevoAdapter
-      throw new ValidationError(`Brevo adapter not yet implemented`);
+      return new BrevoAdapter(clientId, credentials);
 
     case 'SERVICETITAN':
       return new ServiceTitanAdapter(clientId, credentials);
@@ -80,7 +80,7 @@ export function isPlatformSupported(platform: string): boolean {
  * Check if a platform adapter is fully implemented
  */
 export function isPlatformImplemented(platform: string): boolean {
-  const implemented = ['MAILCHIMP', 'BEEHIIV', 'CONSTANT_CONTACT', 'CONSTANTCONTACT'];
+  const implemented = ['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANT_CONTACT', 'CONSTANTCONTACT', 'BREVO', 'BEEHIIV'];
   return implemented.includes(platform.toUpperCase());
 }
 

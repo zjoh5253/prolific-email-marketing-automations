@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -134,19 +134,33 @@ export function OnboardingPage() {
     }
   };
 
+  useEffect(() => {
+    if (!isSubmitted) return;
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [isSubmitted]);
+
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div className="w-full max-w-lg bg-card rounded-lg shadow-lg p-8 border text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+        <div className="w-full max-w-3xl text-center mb-6">
           <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-2">Thank You!</h1>
-          <p className="text-muted-foreground mb-6">
-            Your onboarding form has been submitted successfully. Our team will review your
-            information and reach out to schedule your onboarding call.
+          <p className="text-muted-foreground">
+            Your information has been submitted successfully. Please sign up for a strategy call below.
           </p>
-          <p className="text-sm text-muted-foreground">
-            You can close this page now.
-          </p>
+        </div>
+        <div className="w-full max-w-3xl bg-card rounded-lg shadow-lg border overflow-hidden">
+          <div
+            className="calendly-inline-widget"
+            data-url="https://calendly.com/zac-prolificbranddesign/30min"
+            style={{ minWidth: '320px', height: '700px' }}
+          />
         </div>
       </div>
     );
