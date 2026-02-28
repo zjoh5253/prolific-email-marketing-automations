@@ -25,8 +25,7 @@ services:
     plan: free
     rootDir: backend
     buildCommand: npm install && npm run build && npx prisma generate
-    startCommand: node dist/index.js
-    preDeployCommand: npx prisma migrate deploy
+    startCommand: npx prisma migrate deploy && node dist/index.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -52,13 +51,15 @@ services:
         value: /tmp/uploads
 
   # ===========================================================================
-  # Worker - BullMQ Background Job Processor
+  # Worker - BullMQ Background Job Processor (requires Starter plan)
   # ===========================================================================
+  # NOTE: Background workers require a paid plan on Render.
+  # To enable: upgrade the Render account to Starter and change plan to starter.
   - type: worker
     name: prolific-worker
     runtime: node
     region: oregon
-    plan: free
+    plan: starter
     rootDir: backend
     buildCommand: npm install && npm run build && npx prisma generate
     startCommand: node dist/worker.js
@@ -95,7 +96,7 @@ services:
     pullRequestPreviewsEnabled: false
     envVars:
       - key: VITE_API_URL
-        value: https://prolific-backend.onrender.com
+        value: https://prolific-backend-evfj.onrender.com
     routes:
       - type: rewrite
         source: /*
