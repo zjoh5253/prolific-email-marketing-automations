@@ -31,8 +31,8 @@ export function useUpdateOnboardingStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: OnboardingStatus }) =>
-      onboardingApi.updateStatus(id, status),
+    mutationFn: ({ id, status, convertedClientId }: { id: string; status: OnboardingStatus; convertedClientId?: string }) =>
+      onboardingApi.updateStatus(id, status, convertedClientId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: onboardingKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: onboardingKeys.lists() });

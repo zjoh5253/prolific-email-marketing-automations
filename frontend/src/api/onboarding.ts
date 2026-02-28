@@ -38,11 +38,12 @@ export const onboardingApi = {
 
   updateStatus: async (
     id: string,
-    status: OnboardingStatus
+    status: OnboardingStatus,
+    convertedClientId?: string
   ): Promise<OnboardingSubmission> => {
     const response = await apiClient.patch<ApiResponse<OnboardingSubmission>>(
       `/onboarding/submissions/${id}/status`,
-      { status }
+      { status, ...(convertedClientId && { convertedClientId }) }
     );
     return response.data.data;
   },

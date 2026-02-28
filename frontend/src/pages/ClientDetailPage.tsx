@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, RefreshCw, Settings, Mail, Users, BarChart } from 'lucide-react';
+import { ArrowLeft, ArrowsClockwise, GearSix, EnvelopeSimple, UsersThree, ChartBar } from '@phosphor-icons/react';
 import { useClient, useTriggerSync, useTestConnection } from '@/hooks/queries';
 import { cn, getStatusColor, getPlatformColor, formatDate, formatDateTime } from '@/lib/utils';
 
@@ -86,7 +86,7 @@ export function ClientDetailPage() {
             disabled={triggerSync.isPending}
             className="flex items-center gap-2 h-9 px-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
-            <RefreshCw className={cn('h-4 w-4', triggerSync.isPending && 'animate-spin')} />
+            <ArrowsClockwise className={cn('h-4 w-4', triggerSync.isPending && 'animate-spin')} />
             Sync
           </button>
         </div>
@@ -96,28 +96,28 @@ export function ClientDetailPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <Mail className="h-4 w-4" />
+            <EnvelopeSimple className="h-4 w-4" />
             <span className="text-sm">Campaigns</span>
           </div>
           <p className="text-2xl font-bold">—</p>
         </div>
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <Users className="h-4 w-4" />
+            <UsersThree className="h-4 w-4" />
             <span className="text-sm">Lists</span>
           </div>
           <p className="text-2xl font-bold">—</p>
         </div>
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <BarChart className="h-4 w-4" />
+            <ChartBar className="h-4 w-4" />
             <span className="text-sm">Avg Open Rate</span>
           </div>
           <p className="text-2xl font-bold">—%</p>
         </div>
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <RefreshCw className="h-4 w-4" />
+            <ArrowsClockwise className="h-4 w-4" />
             <span className="text-sm">Last Sync</span>
           </div>
           <p className="text-lg font-medium">
@@ -195,7 +195,7 @@ export function ClientDetailPage() {
                 to={`/clients/${client.id}/settings`}
                 className="flex items-center gap-2 text-sm text-primary hover:underline"
               >
-                <Settings className="h-4 w-4" />
+                <GearSix className="h-4 w-4" />
                 Manage credentials
               </Link>
             </div>

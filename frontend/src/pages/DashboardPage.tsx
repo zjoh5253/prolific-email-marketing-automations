@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Users, Mail, Calendar, Bell, ArrowRight } from 'lucide-react';
+import { UsersThree, EnvelopeSimple, CalendarBlank, Bell, ArrowRight } from '@phosphor-icons/react';
 import { useOverview } from '@/hooks/queries';
 import { useUnreadAlerts } from '@/hooks/queries';
 import { cn, formatNumber, getSeverityColor } from '@/lib/utils';
@@ -14,7 +14,7 @@ export function DashboardPage() {
       value: overview?.clients.total || 0,
       change: overview?.clients.active || 0,
       changeLabel: 'active',
-      icon: Users,
+      icon: UsersThree,
       href: '/clients',
       color: 'bg-blue-500',
     },
@@ -23,7 +23,7 @@ export function DashboardPage() {
       value: overview?.campaigns.sent || 0,
       change: overview?.campaigns.scheduled || 0,
       changeLabel: 'scheduled',
-      icon: Mail,
+      icon: EnvelopeSimple,
       href: '/campaigns',
       color: 'bg-green-500',
     },
@@ -32,7 +32,7 @@ export function DashboardPage() {
       value: overview?.campaigns.scheduled || 0,
       change: null,
       changeLabel: 'upcoming',
-      icon: Calendar,
+      icon: CalendarBlank,
       href: '/calendar',
       color: 'bg-purple-500',
     },
@@ -149,21 +149,21 @@ export function DashboardPage() {
               to="/clients"
               className="p-4 rounded-lg border hover:bg-accent transition-colors text-center"
             >
-              <Users className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+              <UsersThree className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm font-medium">Add Client</p>
             </Link>
             <Link
               to="/campaigns"
               className="p-4 rounded-lg border hover:bg-accent transition-colors text-center"
             >
-              <Mail className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+              <EnvelopeSimple className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm font-medium">View Campaigns</p>
             </Link>
             <Link
               to="/calendar"
               className="p-4 rounded-lg border hover:bg-accent transition-colors text-center"
             >
-              <Calendar className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+              <CalendarBlank className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm font-medium">Schedule</p>
             </Link>
             <Link

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, MoreHorizontal, RefreshCw, ExternalLink, LayoutGrid, List } from 'lucide-react';
+import { Plus, MagnifyingGlass, DotsThree, ArrowsClockwise, ArrowSquareOut, SquaresFour, List } from '@phosphor-icons/react';
 import { useClients, useAccountManagers, useTriggerSync } from '@/hooks/queries';
 import { cn, getStatusColor, getPlatformColor, formatDate } from '@/lib/utils';
 import { ClientWithStats, EmailPlatform } from '@/types';
@@ -69,7 +69,7 @@ export function ClientsPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search clients..."
@@ -127,7 +127,7 @@ export function ClientsPage() {
             )}
             title="Grid view"
           >
-            <LayoutGrid className="h-4 w-4" />
+            <SquaresFour className="h-4 w-4" />
           </button>
           <button
             onClick={() => handleViewModeChange('table')}
@@ -293,14 +293,14 @@ function ClientsTable({
                     className="p-1.5 rounded-md hover:bg-accent transition-colors disabled:opacity-50"
                     title="Sync now"
                   >
-                    <RefreshCw className={cn('h-4 w-4', isSyncing && 'animate-spin')} />
+                    <ArrowsClockwise className={cn('h-4 w-4', isSyncing && 'animate-spin')} />
                   </button>
                   <Link
                     to={`/clients/${client.id}`}
                     className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                   >
                     View
-                    <ExternalLink className="h-3 w-3" />
+                    <ArrowSquareOut className="h-3 w-3" />
                   </Link>
                 </div>
               </td>
@@ -346,7 +346,7 @@ function ClientCard({
               onClick={() => setShowMenu(!showMenu)}
               className="p-1 rounded-md hover:bg-accent"
             >
-              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+              <DotsThree className="h-4 w-4 text-muted-foreground" />
             </button>
             {showMenu && (
               <>
@@ -359,7 +359,7 @@ function ClientCard({
                     to={`/clients/${client.id}`}
                     className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent"
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <ArrowSquareOut className="h-4 w-4" />
                     View Details
                   </Link>
                   <button
@@ -370,7 +370,7 @@ function ClientCard({
                     disabled={isSyncing}
                     className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
                   >
-                    <RefreshCw className={cn('h-4 w-4', isSyncing && 'animate-spin')} />
+                    <ArrowsClockwise className={cn('h-4 w-4', isSyncing && 'animate-spin')} />
                     Sync Now
                   </button>
                 </div>

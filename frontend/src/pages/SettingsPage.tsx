@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Bell, Shield, Palette } from 'lucide-react';
+import { User, Bell, ShieldCheck, Palette } from '@phosphor-icons/react';
 import { useAuthStore } from '@/stores/auth';
 import { useUIStore } from '@/stores/ui';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'security', label: 'Security', icon: Shield },
+  { id: 'security', label: 'Security', icon: ShieldCheck },
   { id: 'appearance', label: 'Appearance', icon: Palette },
 ];
 

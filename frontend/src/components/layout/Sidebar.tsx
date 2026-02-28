@@ -1,26 +1,26 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Users,
-  Mail,
-  Calendar,
+  SquaresFour,
+  UsersThree,
+  EnvelopeSimple,
+  CalendarBlank,
   Bell,
-  Settings,
-  ClipboardList,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+  GearSix,
+  ClipboardText,
+  CaretLeft,
+  CaretRight,
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/ui';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Clients', href: '/clients', icon: Users },
-  { name: 'Campaigns', href: '/campaigns', icon: Mail },
-  { name: 'Calendar', href: '/calendar', icon: Calendar },
-  { name: 'Onboarding Form Submissions', href: '/onboarding-submissions', icon: ClipboardList },
+  { name: 'Dashboard', href: '/dashboard', icon: SquaresFour },
+  { name: 'Clients', href: '/clients', icon: UsersThree },
+  { name: 'Campaigns', href: '/campaigns', icon: EnvelopeSimple },
+  { name: 'Calendar', href: '/calendar', icon: CalendarBlank },
+  { name: 'Onboarding Form Submissions', href: '/onboarding-submissions', icon: ClipboardText },
   { name: 'Alerts', href: '/alerts', icon: Bell },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Settings', href: '/settings', icon: GearSix },
 ];
 
 export function Sidebar() {
@@ -82,9 +82,9 @@ export function Sidebar() {
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? (
-            <ChevronRight className="h-5 w-5" />
+            <CaretRight className="h-5 w-5" />
           ) : (
-            <ChevronLeft className="h-5 w-5" />
+            <CaretLeft className="h-5 w-5" />
           )}
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Search, LogOut, User, ChevronDown } from 'lucide-react';
+import { Bell, MagnifyingGlass, SignOut, User, CaretDown } from '@phosphor-icons/react';
 import { useAuthStore } from '@/stores/auth';
 import { useUnreadAlerts } from '@/hooks/queries';
 import { cn, getInitials, getSeverityColor } from '@/lib/utils';
@@ -31,7 +31,7 @@ export function Header() {
       {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search clients, campaigns..."
@@ -131,7 +131,7 @@ export function Header() {
             <span className="text-sm font-medium">
               {user ? `${user.firstName} ${user.lastName}` : 'User'}
             </span>
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <CaretDown className="h-4 w-4 text-muted-foreground" />
           </button>
 
           {showUserMenu && (
@@ -161,7 +161,7 @@ export function Header() {
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-accent"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <SignOut className="h-4 w-4" />
                   Log out
                 </button>
               </div>

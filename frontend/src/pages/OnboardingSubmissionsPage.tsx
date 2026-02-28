@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Search,
-  ChevronLeft,
-  Loader2,
+  MagnifyingGlass,
+  CaretLeft,
+  SpinnerGap,
   Eye,
   X,
-} from 'lucide-react';
+  UserPlus,
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import {
   useOnboardingSubmissions,
@@ -49,13 +51,14 @@ function SubmissionDetail({
   id: string;
   onBack: () => void;
 }) {
+  const navigate = useNavigate();
   const { data: submission, isLoading } = useOnboardingSubmission(id);
   const updateStatus = useUpdateOnboardingStatus();
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <SpinnerGap className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -87,7 +90,7 @@ function SubmissionDetail({
         onClick={onBack}
         className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <CaretLeft className="h-4 w-4" />
         Back to submissions
       </button>
 
@@ -114,11 +117,11 @@ function SubmissionDetail({
         )}
         {submission.status !== 'CONVERTED' && (
           <button
-            onClick={() => handleStatusUpdate('CONVERTED')}
-            disabled={updateStatus.isPending}
-            className="h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors disabled:opacity-50"
+            onClick={() => navigate('/clients/new', { state: { fromSubmission: submission } })}
+            className="h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors flex items-center gap-1.5"
           >
-            Mark Converted
+            <UserPlus className="h-3.5 w-3.5" />
+            Convert to Client
           </button>
         )}
         {submission.status !== 'ARCHIVED' && (
@@ -217,6 +220,7 @@ function SubmissionDetail({
 }
 
 export function OnboardingSubmissionsPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<OnboardingStatus | ''>('');
   const [page, setPage] = useState(1);
@@ -252,7 +256,7 @@ export function OnboardingSubmissionsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={search}
@@ -291,7 +295,7 @@ export function OnboardingSubmissionsPage() {
       {/* Table */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <SpinnerGap className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : submissions.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
@@ -347,16 +351,30 @@ export function OnboardingSubmissionsPage() {
                         {new Date(sub.submittedAt).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedId(sub.id);
-                          }}
-                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          <Eye className="h-4 w-4" />
-                          View
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          {sub.status !== 'CONVERTED' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/clients/new', { state: { fromSubmission: sub } });
+                              }}
+                              className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                            >
+                              <UserPlus className="h-4 w-4" />
+                              Convert
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedId(sub.id);
+                            }}
+                            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Eye className="h-4 w-4" />
+                            View
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

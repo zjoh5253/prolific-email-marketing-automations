@@ -1,21 +1,23 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  CheckCircle2,
-  AlertTriangle,
+  CaretLeft,
+  CaretRight,
+  SpinnerGap,
+  CheckCircle,
+  Warning,
   Copy,
   Check,
-} from 'lucide-react';
+  Info,
+} from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { useCreateClient, useAccountManagers } from '@/hooks/queries';
-import { EmailPlatform } from '@/types';
+import { useUpdateOnboardingStatus } from '@/hooks/queries/useOnboarding';
+import { EmailPlatform, OnboardingSubmission } from '@/types';
 import { cn } from '@/lib/utils';
 
 // ── Schema ──────────────────────────────────────────────────────────
@@ -159,10 +161,15 @@ const errorClass = 'text-destructive text-sm mt-1';
 
 export function ClientFormPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const createClient = useCreateClient();
+  const updateOnboardingStatus = useUpdateOnboardingStatus();
   const { data: managers } = useAccountManagers();
   const [currentStep, setCurrentStep] = useState(1);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  const fromSubmission = (location.state as { fromSubmission?: OnboardingSubmission })?.fromSubmission;
+  const [submissionId] = useState(fromSubmission?.id);
 
   const {
     register,
@@ -170,6 +177,7 @@ export function ClientFormPage() {
     trigger,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<WizardFormData>({
     resolver: zodResolver(clientWizardSchema),
@@ -181,6 +189,48 @@ export function ClientFormPage() {
       canSendWithoutApproval: undefined,
     },
   });
+
+  // Pre-fill form from onboarding submission
+  useEffect(() => {
+    if (!fromSubmission) return;
+
+    const clientName = fromSubmission.companyName || `${fromSubmission.firstName} ${fromSubmission.lastName}`;
+
+    reset({
+      name: clientName,
+      slug: generateSlug(clientName),
+      platform: '',
+      timezone: 'America/New_York',
+      contactFirstName: fromSubmission.firstName || '',
+      contactLastName: fromSubmission.lastName || '',
+      contactEmail: fromSubmission.email || '',
+      companyName: fromSubmission.companyName || '',
+      fromFieldName: fromSubmission.fromFieldName || '',
+      companyDescription: fromSubmission.companyDescription || '',
+      idealCustomer: fromSubmission.idealCustomer || '',
+      coreProducts: fromSubmission.coreProducts || '',
+      peakSeasonPriorities: fromSubmission.peakSeasonPriorities || '',
+      yearRoundOffers: fromSubmission.yearRoundOffers || '',
+      businessStory: fromSubmission.businessStory || '',
+      uniqueValue: fromSubmission.uniqueValue || '',
+      productTransformation: fromSubmission.productTransformation || '',
+      domainHost: fromSubmission.domainHost || '',
+      domainHostOther: fromSubmission.domainHostOther || '',
+      hasDomainAccess: fromSubmission.hasDomainAccess,
+      domainAccessContact: fromSubmission.domainAccessContact || '',
+      hasEmailPlatform: fromSubmission.hasEmailPlatform,
+      emailPlatform: fromSubmission.emailPlatform || '',
+      emailPlatformOther: fromSubmission.emailPlatformOther || '',
+      marketingEmail: fromSubmission.marketingEmail || '',
+      hasEmailAdminAccess: fromSubmission.hasEmailAdminAccess,
+      emailAdminContact: fromSubmission.emailAdminContact || '',
+      approverFirstName: fromSubmission.approverFirstName || '',
+      approverLastName: fromSubmission.approverLastName || '',
+      approverEmail: fromSubmission.approverEmail || '',
+      approvalMethod: fromSubmission.approvalMethod || '',
+      canSendWithoutApproval: fromSubmission.canSendWithoutApproval,
+    });
+  }, [fromSubmission, reset]);
 
   const watchName = watch('name');
   const watchDomainHost = watch('domainHost');
@@ -263,6 +313,20 @@ export function ClientFormPage() {
         canSendWithoutApproval: cleaned.canSendWithoutApproval as boolean | undefined,
       });
 
+      // Link the onboarding submission to the new client
+      if (submissionId) {
+        try {
+          await updateOnboardingStatus.mutateAsync({
+            id: submissionId,
+            status: 'CONVERTED',
+            convertedClientId: client.id,
+          });
+        } catch {
+          // Non-blocking — client was created successfully, just log
+          toast.error('Client created, but failed to link onboarding submission');
+        }
+      }
+
       navigate(`/clients/${client.id}`);
     } catch {
       // Error handled by mutation's onError callback
@@ -301,6 +365,22 @@ export function ClientFormPage() {
         </button>
       </div>
 
+      {/* Pre-fill Banner */}
+      {fromSubmission && (
+        <div className="mb-6 rounded-lg border border-blue-500/50 bg-blue-500/10 p-4 flex items-start gap-3">
+          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" weight="fill" />
+          <div>
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+              Pre-filled from onboarding submission
+            </p>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-0.5">
+              Submitted by {fromSubmission.firstName} {fromSubmission.lastName} ({fromSubmission.email}).
+              Review the fields and select an email platform to create the client.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -318,7 +398,7 @@ export function ClientFormPage() {
                   )}
                 >
                   {currentStep > step.number ? (
-                    <CheckCircle2 className="h-5 w-5" />
+                    <CheckCircle className="h-5 w-5" />
                   ) : (
                     step.number
                   )}
@@ -851,7 +931,7 @@ export function ClientFormPage() {
               <h2 className="text-lg font-semibold mb-4">Important Notice</h2>
               <div className="rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-6">
                 <div className="flex gap-3">
-                  <AlertTriangle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <Warning className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <div className="space-y-3">
                     <p className="font-medium text-yellow-800 dark:text-yellow-200">
                       Access Required for Onboarding Call
@@ -982,7 +1062,7 @@ export function ClientFormPage() {
                 onClick={goBack}
                 className="flex items-center gap-2 h-10 px-4 rounded-md border border-input bg-background text-sm font-medium hover:bg-accent transition-colors"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <CaretLeft className="h-4 w-4" />
                 Back
               </button>
             ) : (
@@ -1001,7 +1081,7 @@ export function ClientFormPage() {
                 className="flex items-center gap-2 h-10 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 Next
-                <ChevronRight className="h-4 w-4" />
+                <CaretRight className="h-4 w-4" />
               </button>
             ) : (
               <button
@@ -1009,7 +1089,7 @@ export function ClientFormPage() {
                 disabled={createClient.isPending}
                 className="flex items-center gap-2 h-10 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {createClient.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                {createClient.isPending && <SpinnerGap className="h-4 w-4 animate-spin" />}
                 Create Client
               </button>
             )}

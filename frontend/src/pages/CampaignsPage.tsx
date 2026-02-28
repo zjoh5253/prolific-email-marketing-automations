@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Mail, ExternalLink } from 'lucide-react';
+import { MagnifyingGlass, EnvelopeSimple, ArrowSquareOut } from '@phosphor-icons/react';
 import { useCampaigns } from '@/hooks/queries';
 import { cn, getStatusColor, formatDateTime } from '@/lib/utils';
 import { CampaignStatus } from '@/types';
@@ -41,7 +41,7 @@ export function CampaignsPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search campaigns..."
@@ -82,7 +82,7 @@ export function CampaignsPage() {
         </div>
       ) : campaigns.length === 0 ? (
         <div className="bg-card rounded-lg border p-12 text-center">
-          <Mail className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <EnvelopeSimple className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-muted-foreground mb-2">No campaigns found</p>
           <p className="text-sm text-muted-foreground">
             Campaigns will appear here once they are synced from your email platforms.
@@ -186,7 +186,7 @@ export function CampaignsPage() {
                       className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                     >
                       View
-                      <ExternalLink className="h-3 w-3" />
+                      <ArrowSquareOut className="h-3 w-3" />
                     </Link>
                   </td>
                 </tr>

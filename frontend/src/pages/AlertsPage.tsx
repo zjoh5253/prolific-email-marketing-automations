@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, Check, CheckCheck, X } from 'lucide-react';
+import { Bell, Check, Checks, X } from '@phosphor-icons/react';
 import { useAlerts, useMarkAlertRead, useDismissAlert, useMarkAllAlertsRead } from '@/hooks/queries';
 import { cn, getSeverityColor, formatDateTime } from '@/lib/utils';
 import { AlertType, AlertSeverity } from '@/types';
@@ -47,7 +47,7 @@ export function AlertsPage() {
             disabled={markAllRead.isPending}
             className="flex items-center gap-2 h-9 px-3 rounded-md border hover:bg-accent transition-colors disabled:opacity-50"
           >
-            <CheckCheck className="h-4 w-4" />
+            <Checks className="h-4 w-4" />
             Mark all as read
           </button>
         )}

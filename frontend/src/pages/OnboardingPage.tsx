@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, CheckCircle2, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SpinnerGap, CheckCircle, Warning, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { onboardingApi } from '@/api/onboarding';
 import { cn } from '@/lib/utils';
 
@@ -149,7 +149,7 @@ export function OnboardingPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
         <div className="w-full max-w-3xl text-center mb-6">
-          <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
+          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-2">Thank You!</h1>
           <p className="text-muted-foreground">
             Your information has been submitted successfully. Please sign up for a strategy call below.
@@ -197,7 +197,7 @@ export function OnboardingPage() {
                     )}
                   >
                     {currentStep > step.number ? (
-                      <CheckCircle2 className="h-5 w-5" />
+                      <CheckCircle className="h-5 w-5" />
                     ) : (
                       step.number
                     )}
@@ -597,7 +597,7 @@ export function OnboardingPage() {
                 <h2 className="text-lg font-semibold mb-4">Important Notice</h2>
                 <div className="rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-6">
                   <div className="flex gap-3">
-                    <AlertTriangle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <Warning className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
                     <div className="space-y-3">
                       <p className="font-medium text-yellow-800 dark:text-yellow-200">
                         Access Required for Onboarding Call
@@ -736,7 +736,7 @@ export function OnboardingPage() {
                   onClick={goBack}
                   className="flex items-center gap-2 h-10 px-4 rounded-md border border-input bg-background text-sm font-medium hover:bg-accent transition-colors"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <CaretLeft className="h-4 w-4" />
                   Back
                 </button>
               ) : (
@@ -750,7 +750,7 @@ export function OnboardingPage() {
                   className="flex items-center gap-2 h-10 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
                 >
                   Next
-                  <ChevronRight className="h-4 w-4" />
+                  <CaretRight className="h-4 w-4" />
                 </button>
               ) : (
                 <button
@@ -758,7 +758,7 @@ export function OnboardingPage() {
                   disabled={isSubmitting}
                   className="flex items-center gap-2 h-10 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {isSubmitting && <SpinnerGap className="h-4 w-4 animate-spin" />}
                   Submit
                 </button>
               )}

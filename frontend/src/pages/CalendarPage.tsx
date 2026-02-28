@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Calendar, dateFnsLocalizer, Views } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useCalendarEvents } from '@/hooks/queries';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -86,7 +86,7 @@ export function CalendarPage() {
             onClick={() => handleNavigate('PREV')}
             className="p-2 rounded-md hover:bg-accent transition-colors"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <CaretLeft className="h-5 w-5" />
           </button>
           <button
             onClick={() => handleNavigate('TODAY')}
@@ -98,7 +98,7 @@ export function CalendarPage() {
             onClick={() => handleNavigate('NEXT')}
             className="p-2 rounded-md hover:bg-accent transition-colors"
           >
-            <ChevronRight className="h-5 w-5" />
+            <CaretRight className="h-5 w-5" />
           </button>
           <span className="text-lg font-semibold ml-4">
             {format(currentDate, 'MMMM yyyy')}

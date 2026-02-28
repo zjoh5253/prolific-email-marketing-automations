@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
+import { SpinnerGap } from '@phosphor-icons/react';
 import { authApi } from '@/api';
 import { useAuthStore } from '@/stores/auth';
 import { toast } from 'sonner';
@@ -95,7 +95,7 @@ export function LoginPage() {
               disabled={isLoading}
               className="w-full h-10 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {isLoading && <SpinnerGap className="h-4 w-4 animate-spin" />}
               Sign in
             </button>
           </form>
