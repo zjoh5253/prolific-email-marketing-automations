@@ -54,7 +54,7 @@ export function sendError(
     error: {
       code,
       message,
-      ...(details && { details }),
+      ...(details ? { details } : {}),
     },
   };
 

@@ -98,11 +98,11 @@ async function syncCampaigns(job: Job<SyncCampaignsJobData>): Promise<void> {
   }
 
   // Decrypt credentials
-  const decryptedCreds = encryption.decrypt(
-    client.credentials.ciphertext,
-    client.credentials.iv,
-    client.credentials.authTag
-  );
+  const decryptedCreds = encryption.decrypt({
+    ciphertext: client.credentials.ciphertext,
+    iv: client.credentials.iv,
+    authTag: client.credentials.authTag,
+  });
   const credentials = JSON.parse(decryptedCreds);
 
   // Create adapter and fetch campaigns
@@ -213,11 +213,11 @@ async function syncLists(job: Job<SyncListsJobData>): Promise<void> {
   }
 
   // Decrypt credentials
-  const decryptedCreds = encryption.decrypt(
-    client.credentials.ciphertext,
-    client.credentials.iv,
-    client.credentials.authTag
-  );
+  const decryptedCreds = encryption.decrypt({
+    ciphertext: client.credentials.ciphertext,
+    iv: client.credentials.iv,
+    authTag: client.credentials.authTag,
+  });
   const credentials = JSON.parse(decryptedCreds);
 
   // Create adapter and fetch lists
@@ -279,11 +279,11 @@ async function syncMetrics(job: Job<SyncMetricsJobData>): Promise<void> {
   }
 
   // Decrypt credentials
-  const decryptedCreds = encryption.decrypt(
-    client.credentials.ciphertext,
-    client.credentials.iv,
-    client.credentials.authTag
-  );
+  const decryptedCreds = encryption.decrypt({
+    ciphertext: client.credentials.ciphertext,
+    iv: client.credentials.iv,
+    authTag: client.credentials.authTag,
+  });
   const credentials = JSON.parse(decryptedCreds);
 
   const adapter = createPlatformAdapter(clientId, client.platform, credentials);

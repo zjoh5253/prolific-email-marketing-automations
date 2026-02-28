@@ -98,11 +98,11 @@ async function verifyCredentials(job: Job<VerifyCredentialsJobData>): Promise<vo
 
   try {
     // Decrypt credentials
-    const decryptedCreds = encryption.decrypt(
-      client.credentials.ciphertext,
-      client.credentials.iv,
-      client.credentials.authTag
-    );
+    const decryptedCreds = encryption.decrypt({
+      ciphertext: client.credentials.ciphertext,
+      iv: client.credentials.iv,
+      authTag: client.credentials.authTag,
+    });
     const credentials = JSON.parse(decryptedCreds);
 
     // Create adapter and test connection

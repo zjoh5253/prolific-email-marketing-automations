@@ -9,12 +9,12 @@ import {
   processMaintenanceJob,
 } from '../processors/index.js';
 
-const defaultWorkerOptions: Partial<WorkerOptions> = {
+const defaultWorkerOptions = {
   connection: redisConnection,
   concurrency: 5,
   removeOnComplete: { count: 100 },
   removeOnFail: { count: 500 },
-};
+} satisfies WorkerOptions;
 
 // Create workers for each queue
 export function createWorkers(): Worker[] {
