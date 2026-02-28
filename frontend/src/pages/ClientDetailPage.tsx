@@ -134,20 +134,28 @@ export function ClientDetailPage() {
           </div>
           <div className="p-4 space-y-4">
             <div>
+              <p className="text-sm text-muted-foreground">Account Manager</p>
+              <p className="font-medium">
+                {client.accountManager
+                  ? `${client.accountManager.firstName} ${client.accountManager.lastName}`
+                  : 'Not assigned'}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Tier</p>
+              <p className="font-medium">{client.tier || 'Not set'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Contact Email</p>
+              <p className="font-medium">{client.contactEmail || 'Not set'}</p>
+            </div>
+            <div>
               <p className="text-sm text-muted-foreground">Industry</p>
               <p className="font-medium">{client.industry || 'Not specified'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Timezone</p>
               <p className="font-medium">{client.timezone}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Default From Name</p>
-              <p className="font-medium">{client.defaultFromName || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Default From Email</p>
-              <p className="font-medium">{client.defaultFromEmail || 'Not set'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Created</p>

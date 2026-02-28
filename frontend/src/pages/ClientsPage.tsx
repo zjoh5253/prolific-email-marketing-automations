@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, MoreHorizontal, RefreshCw, ExternalLink } from 'lucide-react';
-import { useClients, useTriggerSync } from '@/hooks/queries';
+import { Plus, Search, MoreHorizontal, RefreshCw, ExternalLink, LayoutGrid, List } from 'lucide-react';
+import { useClients, useAccountManagers, useTriggerSync } from '@/hooks/queries';
 import { cn, getStatusColor, getPlatformColor, formatDate } from '@/lib/utils';
 import { ClientWithStats, EmailPlatform } from '@/types';
 
@@ -16,20 +16,39 @@ const platformLabels: Record<EmailPlatform, string> = {
   BEEHIIV: 'Beehiiv',
 };
 
+function getInitialViewMode(): 'grid' | 'table' {
+  try {
+    const stored = localStorage.getItem('clients-view-mode');
+    if (stored === 'grid' || stored === 'table') return stored;
+  } catch {}
+  return 'table';
+}
+
 export function ClientsPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [platformFilter, setPlatformFilter] = useState<string>('');
+  const [managerFilter, setManagerFilter] = useState<string>('');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>(getInitialViewMode);
 
   const { data, isLoading } = useClients({
     search: search || undefined,
     status: statusFilter || undefined,
     platform: platformFilter || undefined,
+    accountManagerId: managerFilter || undefined,
   });
 
+  const { data: managers } = useAccountManagers();
   const triggerSync = useTriggerSync();
 
   const clients = data?.data || [];
+
+  const handleViewModeChange = (mode: 'grid' | 'table') => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem('clients-view-mode', mode);
+    } catch {}
+  };
 
   return (
     <div className="space-y-6">
@@ -67,9 +86,9 @@ export function ClientsPage() {
         >
           <option value="">All Statuses</option>
           <option value="ACTIVE">Active</option>
-          <option value="PENDING">Pending</option>
+          <option value="ONBOARDING">Onboarding</option>
           <option value="PAUSED">Paused</option>
-          <option value="DISCONNECTED">Disconnected</option>
+          <option value="CHURNED">Churned</option>
         </select>
 
         <select
@@ -84,25 +103,69 @@ export function ClientsPage() {
             </option>
           ))}
         </select>
+
+        <select
+          value={managerFilter}
+          onChange={(e) => setManagerFilter(e.target.value)}
+          className="h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          <option value="">All Managers</option>
+          {managers?.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.firstName} {m.lastName}
+            </option>
+          ))}
+        </select>
+
+        {/* View toggle */}
+        <div className="flex items-center rounded-md border border-input">
+          <button
+            onClick={() => handleViewModeChange('grid')}
+            className={cn(
+              'p-2 rounded-l-md transition-colors',
+              viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
+            )}
+            title="Grid view"
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleViewModeChange('table')}
+            className={cn(
+              'p-2 rounded-r-md transition-colors',
+              viewMode === 'table' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
+            )}
+            title="Table view"
+          >
+            <List className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Clients Grid */}
+      {/* Content */}
       {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="bg-card rounded-lg border p-6 animate-pulse"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="h-10 w-10 rounded-lg bg-muted" />
-                <div className="h-6 w-16 rounded-md bg-muted" />
+        viewMode === 'grid' ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-card rounded-lg border p-6 animate-pulse">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-muted" />
+                  <div className="h-6 w-16 rounded-md bg-muted" />
+                </div>
+                <div className="h-5 w-32 bg-muted rounded mb-2" />
+                <div className="h-4 w-24 bg-muted rounded" />
               </div>
-              <div className="h-5 w-32 bg-muted rounded mb-2" />
-              <div className="h-4 w-24 bg-muted rounded" />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-card rounded-lg border p-8 animate-pulse">
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-10 bg-muted rounded" />
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )
       ) : clients.length === 0 ? (
         <div className="bg-card rounded-lg border p-12 text-center">
           <p className="text-muted-foreground mb-4">No clients found</p>
@@ -114,7 +177,7 @@ export function ClientsPage() {
             Add your first client
           </Link>
         </div>
-      ) : (
+      ) : viewMode === 'grid' ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {clients.map((client) => (
             <ClientCard
@@ -125,6 +188,12 @@ export function ClientsPage() {
             />
           ))}
         </div>
+      ) : (
+        <ClientsTable
+          clients={clients}
+          onSync={(id) => triggerSync.mutate(id)}
+          isSyncing={triggerSync.isPending}
+        />
       )}
 
       {/* Pagination */}
@@ -145,6 +214,100 @@ export function ClientsPage() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function ClientsTable({
+  clients,
+  onSync,
+  isSyncing,
+}: {
+  clients: ClientWithStats[];
+  onSync: (id: string) => void;
+  isSyncing: boolean;
+}) {
+  return (
+    <div className="bg-card rounded-lg border overflow-hidden">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b bg-muted/50">
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Account Manager</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Platform</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tier</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Campaigns</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Lists</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Last Sync</th>
+            <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clients.map((client) => (
+            <tr key={client.id} className="border-b last:border-0 hover:bg-muted/50">
+              <td className="px-4 py-3">
+                <Link to={`/clients/${client.id}`} className="flex items-center gap-3 group">
+                  <div
+                    className="h-8 w-8 rounded-md flex items-center justify-center text-white font-bold text-sm shrink-0"
+                    style={{ backgroundColor: getPlatformColor(client.platform) }}
+                  >
+                    {client.name[0]}
+                  </div>
+                  <span className="font-medium group-hover:text-primary transition-colors">
+                    {client.name}
+                  </span>
+                </Link>
+              </td>
+              <td className="px-4 py-3 text-sm">
+                {client.accountManager
+                  ? `${client.accountManager.firstName} ${client.accountManager.lastName}`
+                  : <span className="text-muted-foreground">--</span>}
+              </td>
+              <td className="px-4 py-3 text-sm">
+                {platformLabels[client.platform] || client.platform}
+              </td>
+              <td className="px-4 py-3 text-sm">
+                {client.tier || <span className="text-muted-foreground">--</span>}
+              </td>
+              <td className="px-4 py-3">
+                <span
+                  className={cn(
+                    'text-xs px-2 py-1 rounded-md font-medium',
+                    getStatusColor(client.status)
+                  )}
+                >
+                  {client.status}
+                </span>
+              </td>
+              <td className="px-4 py-3 text-sm">{client._count?.campaigns || 0}</td>
+              <td className="px-4 py-3 text-sm">{client._count?.lists || 0}</td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {client.lastSyncAt ? formatDate(client.lastSyncAt) : 'Never'}
+              </td>
+              <td className="px-4 py-3 text-right">
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => onSync(client.id)}
+                    disabled={isSyncing}
+                    className="p-1.5 rounded-md hover:bg-accent transition-colors disabled:opacity-50"
+                    title="Sync now"
+                  >
+                    <RefreshCw className={cn('h-4 w-4', isSyncing && 'animate-spin')} />
+                  </button>
+                  <Link
+                    to={`/clients/${client.id}`}
+                    className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                  >
+                    View
+                    <ExternalLink className="h-3 w-3" />
+                  </Link>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -222,6 +385,12 @@ function ClientCard({
           {client.name}
         </h3>
         <p className="text-sm text-muted-foreground">{platformLabels[client.platform]}</p>
+
+        {client.accountManager && (
+          <p className="text-xs text-muted-foreground mt-1">
+            {client.accountManager.firstName} {client.accountManager.lastName}
+          </p>
+        )}
 
         <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
           <span>{client._count?.campaigns || 0} campaigns</span>
