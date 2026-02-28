@@ -49,9 +49,7 @@ export function LoginPage() {
         <div className="bg-card rounded-lg shadow-lg p-8 border">
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-2xl">P</span>
-            </div>
+            <img src="/logo.png" alt="Prolific" className="h-10" />
           </div>
 
           <h1 className="text-2xl font-bold text-center mb-2">Welcome back</h1>
@@ -103,7 +101,7 @@ export function LoginPage() {
           </form>
 
           <p className="text-sm text-muted-foreground text-center mt-6">
-            Demo credentials: admin@prolific.com / admin123
+            Prolific Email Marketing Platform
           </p>
         </div>
       </div>

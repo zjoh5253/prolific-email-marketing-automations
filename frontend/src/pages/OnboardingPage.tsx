@@ -172,9 +172,7 @@ export function OnboardingPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-2xl">P</span>
-            </div>
+            <img src="/logo.png" alt="Prolific" className="h-10" />
           </div>
           <h1 className="text-2xl font-bold">Client Onboarding</h1>
           <p className="text-muted-foreground mt-1">

@@ -18,7 +18,7 @@ const navigation = [
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Campaigns', href: '/campaigns', icon: Mail },
   { name: 'Calendar', href: '/calendar', icon: Calendar },
-  { name: 'Submissions', href: '/onboarding-submissions', icon: ClipboardList },
+  { name: 'Onboarding Form Submissions', href: '/onboarding-submissions', icon: ClipboardList },
   { name: 'Alerts', href: '/alerts', icon: Bell },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -37,18 +37,13 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-4 border-b">
         {!sidebarCollapsed && (
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">P</span>
-            </div>
-            <span className="font-semibold text-lg">Prolific</span>
+          <Link to="/dashboard" className="flex items-center">
+            <img src="/logo.png" alt="Prolific" className="h-8" />
           </Link>
         )}
         {sidebarCollapsed && (
           <Link to="/dashboard" className="mx-auto">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">P</span>
-            </div>
+            <img src="/logo-icon.png" alt="Prolific" className="h-8 w-8" />
           </Link>
         )}
       </div>
