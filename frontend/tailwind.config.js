@@ -14,6 +14,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -48,6 +51,13 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // Prolific brand colors
+        'prolific-green': '#00C072',
+        'prolific-purple': '#3305BD',
+        'prolific-lavender': '#A6B0EF',
+        'prolific-mid-purple': '#4C47C4',
+        'prolific-orange': '#FF6A1B',
+        'prolific-navy': '#131E2A',
       },
       borderRadius: {
         lg: 'var(--radius)',
