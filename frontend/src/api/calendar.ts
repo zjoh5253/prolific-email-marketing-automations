@@ -1,5 +1,5 @@
 import { apiClient, ApiResponse } from './client';
-import { CalendarEvent, Campaign } from '@/types';
+import { CalendarEvent } from '@/types';
 
 export interface CalendarParams {
   startDate: string;

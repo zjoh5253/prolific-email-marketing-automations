@@ -24,7 +24,7 @@ services:
     region: oregon
     plan: free
     rootDir: backend
-    buildCommand: npm install && npm run build && npx prisma generate
+    buildCommand: cd .. && npm install && cd backend && npm run build && npx prisma generate
     startCommand: npx prisma migrate deploy && node dist/index.js
     healthCheckPath: /health
     envVars:
@@ -61,7 +61,7 @@ services:
     region: oregon
     plan: starter
     rootDir: backend
-    buildCommand: npm install && npm run build && npx prisma generate
+    buildCommand: cd .. && npm install && cd backend && npm run build && npx prisma generate
     startCommand: node dist/worker.js
     envVars:
       - key: NODE_ENV
@@ -91,7 +91,7 @@ services:
     name: prolific-frontend
     region: oregon
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: cd .. && npm install && cd frontend && npm run build
     staticPublishPath: dist
     pullRequestPreviewsEnabled: false
     envVars:

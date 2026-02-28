@@ -17,7 +17,9 @@ export type EmailPlatform =
   | 'HUBSPOT'
   | 'ACTIVECAMPAIGN'
   | 'CONSTANT_CONTACT'
-  | 'BREVO';
+  | 'BREVO'
+  | 'SERVICETITAN'
+  | 'BEEHIIV';
 
 export type ClientStatus = 'ACTIVE' | 'PENDING' | 'PAUSED' | 'DISCONNECTED';
 
@@ -172,6 +174,54 @@ export interface ContextSnippet {
   createdAt: string;
   updatedAt: string;
 }
+
+// Onboarding types
+export type OnboardingStatus = 'SUBMITTED' | 'REVIEWED' | 'CONVERTED' | 'ARCHIVED';
+
+export interface OnboardingSubmission {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  companyName?: string;
+  fromFieldName?: string;
+  companyDescription?: string;
+  idealCustomer?: string;
+  coreProducts?: string;
+  peakSeasonPriorities?: string;
+  yearRoundOffers?: string;
+  businessStory?: string;
+  uniqueValue?: string;
+  productTransformation?: string;
+  domainHost?: string;
+  domainHostOther?: string;
+  hasDomainAccess?: boolean;
+  domainAccessContact?: string;
+  hasEmailPlatform?: boolean;
+  emailPlatform?: string;
+  emailPlatformOther?: string;
+  marketingEmail?: string;
+  hasEmailAdminAccess?: boolean;
+  emailAdminContact?: string;
+  approverFirstName?: string;
+  approverLastName?: string;
+  approverEmail?: string;
+  approvalMethod?: string;
+  canSendWithoutApproval?: boolean;
+  status: OnboardingStatus;
+  ipAddress?: string;
+  userAgent?: string;
+  convertedClientId?: string;
+  convertedClient?: { id: string; name: string; slug: string };
+  submittedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type OnboardingFormData = Omit<
+  OnboardingSubmission,
+  'id' | 'status' | 'ipAddress' | 'userAgent' | 'convertedClientId' | 'convertedClient' | 'submittedAt' | 'createdAt' | 'updatedAt'
+>;
 
 // Analytics types
 export interface DashboardOverview {

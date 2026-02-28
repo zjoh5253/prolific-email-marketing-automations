@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Filter, MoreHorizontal, RefreshCw, ExternalLink } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, RefreshCw, ExternalLink } from 'lucide-react';
 import { useClients, useTriggerSync } from '@/hooks/queries';
 import { cn, getStatusColor, getPlatformColor, formatDate } from '@/lib/utils';
 import { ClientWithStats, EmailPlatform } from '@/types';
@@ -12,6 +12,8 @@ const platformLabels: Record<EmailPlatform, string> = {
   ACTIVECAMPAIGN: 'ActiveCampaign',
   CONSTANT_CONTACT: 'Constant Contact',
   BREVO: 'Brevo',
+  SERVICETITAN: 'ServiceTitan',
+  BEEHIIV: 'Beehiiv',
 };
 
 export function ClientsPage() {

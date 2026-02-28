@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Filter, Mail, Calendar, ExternalLink } from 'lucide-react';
+import { Search, Mail, ExternalLink } from 'lucide-react';
 import { useCampaigns } from '@/hooks/queries';
-import { cn, getStatusColor, formatDate, formatDateTime } from '@/lib/utils';
+import { cn, getStatusColor, formatDateTime } from '@/lib/utils';
 import { CampaignStatus } from '@/types';
 
 const statusLabels: Record<CampaignStatus, string> = {

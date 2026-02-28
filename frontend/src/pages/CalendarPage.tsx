@@ -4,7 +4,7 @@ import { format, parse, startOfWeek, getDay, startOfMonth, endOfMonth, addMonths
 import { enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCalendarEvents } from '@/hooks/queries';
-import { cn, getStatusColor } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const locales = {

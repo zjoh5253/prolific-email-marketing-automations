@@ -71,14 +71,15 @@ model Client {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  credentials      ClientCredential?
-  campaigns        Campaign[]
-  lists            AudienceList[]
-  assets           Asset[]
-  cadences         Cadence[]
-  alerts           Alert[]
-  contextSnippets  ContextSnippet[]
-  activityLogs     AuditLog[]
+  credentials              ClientCredential?
+  campaigns                Campaign[]
+  lists                    AudienceList[]
+  assets                   Asset[]
+  cadences                 Cadence[]
+  alerts                   Alert[]
+  contextSnippets          ContextSnippet[]
+  activityLogs             AuditLog[]
+  onboardingSubmissions    OnboardingSubmission[]
 
   @@map("clients")
 }
@@ -97,6 +98,8 @@ enum EmailPlatform {
   ACTIVECAMPAIGN
   CONSTANTCONTACT
   BREVO
+  SERVICETITAN
+  BEEHIIV
   OTHER
 }
 
@@ -464,6 +467,73 @@ enum JobStatus {
   COMPLETED
   FAILED
   RETRYING
+}
+
+// ============================================
+// Onboarding Submissions
+// ============================================
+
+enum OnboardingStatus {
+  SUBMITTED
+  REVIEWED
+  CONVERTED
+  ARCHIVED
+}
+
+model OnboardingSubmission {
+  id                     String           @id @default(uuid())
+
+  // Step 1: Contact Info
+  firstName              String
+  lastName               String
+  email                  String
+
+  // Step 2: Content Questions
+  companyName            String?
+  fromFieldName          String?
+  companyDescription     String?          @db.Text
+  idealCustomer          String?          @db.Text
+  coreProducts           String?          @db.Text
+  peakSeasonPriorities   String?          @db.Text
+  yearRoundOffers        String?          @db.Text
+  businessStory          String?          @db.Text
+  uniqueValue            String?          @db.Text
+  productTransformation  String?          @db.Text
+
+  // Step 3: Technical Setup
+  domainHost             String?
+  domainHostOther        String?
+  hasDomainAccess        Boolean?
+  domainAccessContact    String?
+  hasEmailPlatform       Boolean?
+  emailPlatform          String?
+  emailPlatformOther     String?
+  marketingEmail         String?
+  hasEmailAdminAccess    Boolean?
+  emailAdminContact      String?
+
+  // Step 5: Content Approval
+  approverFirstName      String?
+  approverLastName       String?
+  approverEmail          String?
+  approvalMethod         String?
+  canSendWithoutApproval Boolean?
+
+  // Meta
+  status                 OnboardingStatus @default(SUBMITTED)
+  ipAddress              String?
+  userAgent              String?
+  convertedClientId      String?
+  submittedAt            DateTime         @default(now())
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  convertedClient        Client?          @relation(fields: [convertedClientId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([email])
+  @@index([submittedAt])
+  @@map("onboarding_submissions")
 }
 
 // ============================================

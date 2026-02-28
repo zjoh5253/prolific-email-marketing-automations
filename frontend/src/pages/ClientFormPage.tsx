@@ -11,6 +11,8 @@ const platforms: { value: EmailPlatform; label: string }[] = [
   { value: 'ACTIVECAMPAIGN', label: 'ActiveCampaign' },
   { value: 'CONSTANT_CONTACT', label: 'Constant Contact' },
   { value: 'BREVO', label: 'Brevo' },
+  { value: 'SERVICETITAN', label: 'ServiceTitan' },
+  { value: 'BEEHIIV', label: 'Beehiiv' },
 ];
 
 const timezones = [

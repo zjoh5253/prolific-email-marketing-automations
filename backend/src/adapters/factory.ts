@@ -1,6 +1,8 @@
 import { EmailPlatformAdapter } from './base/EmailPlatformAdapter.js';
 import { MailchimpAdapter } from './mailchimp/MailchimpAdapter.js';
 import { KlaviyoAdapter } from './klaviyo/KlaviyoAdapter.js';
+import { ServiceTitanAdapter } from './servicetitan/ServiceTitanAdapter.js';
+import { BeehiivAdapter } from './beehiiv/BeehiivAdapter.js';
 import { PlatformCredentials } from './types.js';
 import { ValidationError } from '../utils/errors.js';
 
@@ -10,7 +12,9 @@ export type SupportedPlatform =
   | 'HUBSPOT'
   | 'ACTIVECAMPAIGN'
   | 'CONSTANT_CONTACT'
-  | 'BREVO';
+  | 'BREVO'
+  | 'SERVICETITAN'
+  | 'BEEHIIV';
 
 /**
  * Factory to create platform-specific adapters
@@ -43,6 +47,12 @@ export function createPlatformAdapter(
       // TODO: Implement BrevoAdapter
       throw new ValidationError(`Brevo adapter not yet implemented`);
 
+    case 'SERVICETITAN':
+      return new ServiceTitanAdapter(clientId, credentials);
+
+    case 'BEEHIIV':
+      return new BeehiivAdapter(clientId, credentials);
+
     default:
       throw new ValidationError(`Unsupported email platform: ${platform}`);
   }
@@ -59,6 +69,8 @@ export function isPlatformSupported(platform: string): boolean {
     'ACTIVECAMPAIGN',
     'CONSTANT_CONTACT',
     'BREVO',
+    'SERVICETITAN',
+    'BEEHIIV',
   ];
   return supported.includes(platform.toUpperCase());
 }
@@ -82,6 +94,8 @@ export function getSupportedPlatforms(): SupportedPlatform[] {
     'ACTIVECAMPAIGN',
     'CONSTANT_CONTACT',
     'BREVO',
+    'SERVICETITAN',
+    'BEEHIIV',
   ];
 }
 
@@ -106,6 +120,12 @@ export function getRequiredCredentials(platform: string): string[] {
       return ['accessToken', 'refreshToken'];
 
     case 'BREVO':
+      return ['apiKey'];
+
+    case 'SERVICETITAN':
+      return ['clientId', 'clientSecret', 'accessToken'];
+
+    case 'BEEHIIV':
       return ['apiKey'];
 
     default:

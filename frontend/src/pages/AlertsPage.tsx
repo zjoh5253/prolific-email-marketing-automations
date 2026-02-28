@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, Check, CheckCheck, X, Filter } from 'lucide-react';
+import { Bell, Check, CheckCheck, X } from 'lucide-react';
 import { useAlerts, useMarkAlertRead, useDismissAlert, useMarkAllAlertsRead } from '@/hooks/queries';
 import { cn, getSeverityColor, formatDateTime } from '@/lib/utils';
 import { AlertType, AlertSeverity } from '@/types';

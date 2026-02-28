@@ -6,7 +6,7 @@ export const clientIdParamsSchema = z.object({
 
 export const listClientsQuerySchema = z.object({
   status: z.enum(['ACTIVE', 'PAUSED', 'CHURNED', 'ONBOARDING']).optional(),
-  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'OTHER']).optional(),
+  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'SERVICETITAN', 'BEEHIIV', 'OTHER']).optional(),
   search: z.string().optional(),
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(50),
@@ -20,7 +20,7 @@ export const createClientSchema = z.object({
     .min(1, 'Slug is required')
     .max(100)
     .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
-  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'OTHER']),
+  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'SERVICETITAN', 'BEEHIIV', 'OTHER']),
   industry: z.string().max(100).optional(),
   timezone: z.string().default('America/New_York'),
   credentials: z.record(z.string()).optional(),
@@ -34,7 +34,7 @@ export const updateClientSchema = z.object({
     .max(100)
     .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens')
     .optional(),
-  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'OTHER']).optional(),
+  platform: z.enum(['MAILCHIMP', 'KLAVIYO', 'HUBSPOT', 'ACTIVECAMPAIGN', 'CONSTANTCONTACT', 'BREVO', 'SERVICETITAN', 'BEEHIIV', 'OTHER']).optional(),
   industry: z.string().max(100).optional(),
   timezone: z.string().optional(),
   status: z.enum(['ACTIVE', 'PAUSED', 'CHURNED', 'ONBOARDING']).optional(),

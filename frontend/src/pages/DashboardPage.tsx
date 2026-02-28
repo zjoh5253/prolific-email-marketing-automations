@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Users, Mail, Calendar, Bell, ArrowRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { Users, Mail, Calendar, Bell, ArrowRight } from 'lucide-react';
 import { useOverview } from '@/hooks/queries';
 import { useUnreadAlerts } from '@/hooks/queries';
 import { cn, formatNumber, getSeverityColor } from '@/lib/utils';

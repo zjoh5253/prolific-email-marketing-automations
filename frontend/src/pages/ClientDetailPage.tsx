@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, RefreshCw, Settings, Mail, Users, FileText, BarChart } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Settings, Mail, Users, BarChart } from 'lucide-react';
 import { useClient, useTriggerSync, useTestConnection } from '@/hooks/queries';
 import { cn, getStatusColor, getPlatformColor, formatDate, formatDateTime } from '@/lib/utils';
 
@@ -10,6 +10,8 @@ const platformLabels: Record<string, string> = {
   ACTIVECAMPAIGN: 'ActiveCampaign',
   CONSTANT_CONTACT: 'Constant Contact',
   BREVO: 'Brevo',
+  SERVICETITAN: 'ServiceTitan',
+  BEEHIIV: 'Beehiiv',
 };
 
 export function ClientDetailPage() {

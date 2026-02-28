@@ -9,12 +9,14 @@ import { alertsRoutes } from './alerts.routes.js';
 import { calendarRoutes } from './calendar.routes.js';
 import { analyticsRoutes } from './analytics.routes.js';
 import { adminRoutes } from './admin.routes.js';
+import { onboardingPublicRoutes, onboardingAdminRoutes } from './onboarding.routes.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 export const router = Router();
 
 // Public routes
 router.use('/auth', authRoutes);
+router.use('/onboarding', onboardingPublicRoutes);
 
 // Protected routes
 router.use('/clients', authMiddleware, clientsRoutes);
@@ -26,3 +28,4 @@ router.use('/alerts', authMiddleware, alertsRoutes);
 router.use('/calendar', authMiddleware, calendarRoutes);
 router.use('/analytics', authMiddleware, analyticsRoutes);
 router.use('/admin', authMiddleware, adminRoutes);
+router.use('/onboarding/submissions', authMiddleware, onboardingAdminRoutes);

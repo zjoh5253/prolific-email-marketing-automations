@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "EmailPlatform" ADD VALUE 'SERVICETITAN';
+ALTER TYPE "EmailPlatform" ADD VALUE 'BEEHIIV';

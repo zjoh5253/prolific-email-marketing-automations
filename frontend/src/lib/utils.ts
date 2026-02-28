@@ -65,6 +65,8 @@ export function getPlatformColor(platform: string): string {
     ACTIVECAMPAIGN: '#356AE6',
     CONSTANT_CONTACT: '#0076BE',
     BREVO: '#0092FF',
+    SERVICETITAN: '#FF6B00',
+    BEEHIIV: '#1A1A1A',
   };
   return colors[platform] || '#6B7280';
 }
