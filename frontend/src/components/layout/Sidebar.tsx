@@ -6,6 +6,7 @@ import {
   Calendar,
   Bell,
   Settings,
+  ClipboardList,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Campaigns', href: '/campaigns', icon: Mail },
   { name: 'Calendar', href: '/calendar', icon: Calendar },
+  { name: 'Submissions', href: '/onboarding-submissions', icon: ClipboardList },
   { name: 'Alerts', href: '/alerts', icon: Bell },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

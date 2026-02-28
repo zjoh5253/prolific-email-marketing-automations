@@ -15,12 +15,13 @@ import { Prisma } from '@prisma/client';
 export class ClientsController {
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { status, platform, search, page, limit, sortBy, sortOrder } = req.query as unknown as ListClientsQuery;
+      const { status, platform, accountManagerId, search, page, limit, sortBy, sortOrder } = req.query as unknown as ListClientsQuery;
 
       const where: Prisma.ClientWhereInput = {};
 
       if (status) where.status = status;
       if (platform) where.platform = platform;
+      if (accountManagerId) where.accountManagerId = accountManagerId;
       if (search) {
         where.OR = [
           { name: { contains: search, mode: 'insensitive' } },
@@ -35,6 +36,9 @@ export class ClientsController {
           take: limit,
           orderBy: { [sortBy]: sortOrder },
           include: {
+            accountManager: {
+              select: { id: true, firstName: true, lastName: true, email: true },
+            },
             _count: {
               select: {
                 campaigns: true,
@@ -60,6 +64,9 @@ export class ClientsController {
       const client = await prisma.client.findUnique({
         where: { id },
         include: {
+          accountManager: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
           credentials: {
             select: {
               isValid: true,
@@ -271,6 +278,28 @@ export class ClientsController {
       }
 
       sendSuccess(res, client);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async listAccountManagers(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const managers = await prisma.user.findMany({
+        where: {
+          isActive: true,
+          role: { in: ['ADMIN', 'MANAGER'] },
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+        orderBy: { firstName: 'asc' },
+      });
+
+      sendSuccess(res, managers);
     } catch (error) {
       next(error);
     }

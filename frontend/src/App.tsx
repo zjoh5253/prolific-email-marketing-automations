@@ -11,6 +11,8 @@ import { CampaignsPage } from '@/pages/CampaignsPage';
 import { CalendarPage } from '@/pages/CalendarPage';
 import { AlertsPage } from '@/pages/AlertsPage';
 import { SettingsPage } from '@/pages/SettingsPage';
+import { OnboardingPage } from '@/pages/OnboardingPage';
+import { OnboardingSubmissionsPage } from '@/pages/OnboardingSubmissionsPage';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -27,6 +29,7 @@ function App() {
     <>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/onboard" element={<OnboardingPage />} />
 
         <Route
           path="/"
@@ -45,6 +48,7 @@ function App() {
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="alerts" element={<AlertsPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="onboarding-submissions" element={<OnboardingSubmissionsPage />} />
         </Route>
       </Routes>
 

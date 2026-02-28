@@ -9,6 +9,7 @@ export const clientKeys = {
   details: () => [...clientKeys.all, 'detail'] as const,
   detail: (id: string) => [...clientKeys.details(), id] as const,
   context: (id: string) => [...clientKeys.detail(id), 'context'] as const,
+  accountManagers: () => [...clientKeys.all, 'account-managers'] as const,
 };
 
 export function useClients(params?: ClientsListParams) {
@@ -31,6 +32,13 @@ export function useClientContext(id: string) {
     queryKey: clientKeys.context(id),
     queryFn: () => clientsApi.getContext(id),
     enabled: !!id,
+  });
+}
+
+export function useAccountManagers() {
+  return useQuery({
+    queryKey: clientKeys.accountManagers(),
+    queryFn: () => clientsApi.listAccountManagers(),
   });
 }
 

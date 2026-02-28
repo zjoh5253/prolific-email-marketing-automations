@@ -10,6 +10,14 @@ export interface User {
   updatedAt: string;
 }
 
+// Account Manager type (lightweight user ref)
+export interface AccountManager {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 // Client types
 export type EmailPlatform =
   | 'MAILCHIMP'
@@ -37,7 +45,41 @@ export interface Client {
   logoUrl?: string;
   defaultFromName?: string;
   defaultFromEmail?: string;
+  accountManagerId?: string;
+  accountManager?: AccountManager;
+  tier?: string;
   lastSyncAt?: string;
+  // Onboarding: Contact
+  contactFirstName?: string;
+  contactLastName?: string;
+  contactEmail?: string;
+  // Onboarding: Content
+  fromFieldName?: string;
+  companyDescription?: string;
+  idealCustomer?: string;
+  coreProducts?: string;
+  peakSeasonPriorities?: string;
+  yearRoundOffers?: string;
+  businessStory?: string;
+  uniqueValue?: string;
+  productTransformation?: string;
+  // Onboarding: Technical Setup
+  domainHost?: string;
+  domainHostOther?: string;
+  hasDomainAccess?: boolean;
+  domainAccessContact?: string;
+  hasEmailPlatform?: boolean;
+  emailPlatform?: string;
+  emailPlatformOther?: string;
+  marketingEmail?: string;
+  hasEmailAdminAccess?: boolean;
+  emailAdminContact?: string;
+  // Onboarding: Content Approval
+  approverFirstName?: string;
+  approverLastName?: string;
+  approverEmail?: string;
+  approvalMethod?: string;
+  canSendWithoutApproval?: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -23,6 +23,12 @@ clientsRoutes.get(
   controller.list
 );
 
+// GET /api/clients/account-managers
+clientsRoutes.get(
+  '/account-managers',
+  controller.listAccountManagers
+);
+
 // GET /api/clients/:id
 clientsRoutes.get(
   '/:id',

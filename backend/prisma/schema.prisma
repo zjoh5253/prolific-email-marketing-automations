@@ -25,9 +25,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  sessions      Session[]
-  auditLogs     AuditLog[]
-  approvals     CampaignApproval[]
+  sessions       Session[]
+  auditLogs      AuditLog[]
+  approvals      CampaignApproval[]
+  managedClients Client[]  @relation("ManagedClients")
 
   @@map("users")
 }
@@ -63,24 +64,64 @@ model Client {
   platform        EmailPlatform
   industry        String?
   timezone        String         @default("America/New_York")
-  status          ClientStatus   @default(ACTIVE)
-  contextMarkdown String?        @db.Text
-  lastSyncAt      DateTime?
+  status           ClientStatus   @default(ACTIVE)
+  contextMarkdown  String?        @db.Text
+  accountManagerId String?
+  tier             String?
+  lastSyncAt       DateTime?
   syncStatus      SyncStatus     @default(PENDING)
   syncError       String?
+
+  // Onboarding: Contact
+  contactFirstName     String?
+  contactLastName      String?
+  contactEmail         String?
+
+  // Onboarding: Content
+  fromFieldName          String?
+  companyDescription     String?          @db.Text
+  idealCustomer          String?          @db.Text
+  coreProducts           String?          @db.Text
+  peakSeasonPriorities   String?          @db.Text
+  yearRoundOffers        String?          @db.Text
+  businessStory          String?          @db.Text
+  uniqueValue            String?          @db.Text
+  productTransformation  String?          @db.Text
+
+  // Onboarding: Technical Setup
+  domainHost             String?
+  domainHostOther        String?
+  hasDomainAccess        Boolean?
+  domainAccessContact    String?
+  hasEmailPlatform       Boolean?
+  emailPlatform          String?
+  emailPlatformOther     String?
+  marketingEmail         String?
+  hasEmailAdminAccess    Boolean?
+  emailAdminContact      String?
+
+  // Onboarding: Content Approval
+  approverFirstName      String?
+  approverLastName       String?
+  approverEmail          String?
+  approvalMethod         String?
+  canSendWithoutApproval Boolean?
+
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  credentials              ClientCredential?
-  campaigns                Campaign[]
-  lists                    AudienceList[]
-  assets                   Asset[]
-  cadences                 Cadence[]
-  alerts                   Alert[]
-  contextSnippets          ContextSnippet[]
-  activityLogs             AuditLog[]
-  onboardingSubmissions    OnboardingSubmission[]
+  accountManager            User?          @relation("ManagedClients", fields: [accountManagerId], references: [id], onDelete: SetNull)
+  credentials               ClientCredential?
+  campaigns                 Campaign[]
+  lists                     AudienceList[]
+  assets                    Asset[]
+  cadences                  Cadence[]
+  alerts                    Alert[]
+  contextSnippets           ContextSnippet[]
+  activityLogs              AuditLog[]
+  onboardingSubmissions     OnboardingSubmission[]
 
+  @@index([accountManagerId])
   @@map("clients")
 }
 

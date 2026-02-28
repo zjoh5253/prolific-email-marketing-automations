@@ -1,5 +1,5 @@
 import { apiClient, ApiResponse, PaginatedResponse } from './client';
-import { Client, ClientWithStats, ContextSnippet, EmailPlatform } from '@/types';
+import { AccountManager, Client, ClientWithStats, ContextSnippet, EmailPlatform } from '@/types';
 
 export interface CreateClientRequest {
   name: string;
@@ -7,14 +7,50 @@ export interface CreateClientRequest {
   platform: EmailPlatform;
   industry?: string;
   timezone?: string;
+  accountManagerId?: string | null;
+  tier?: string | null;
   defaultFromName?: string;
   defaultFromEmail?: string;
+  // Onboarding: Contact
+  contactFirstName?: string;
+  contactLastName?: string;
+  contactEmail?: string;
+  // Onboarding: Content
+  fromFieldName?: string;
+  companyDescription?: string;
+  idealCustomer?: string;
+  coreProducts?: string;
+  peakSeasonPriorities?: string;
+  yearRoundOffers?: string;
+  businessStory?: string;
+  uniqueValue?: string;
+  productTransformation?: string;
+  // Onboarding: Technical Setup
+  domainHost?: string;
+  domainHostOther?: string;
+  hasDomainAccess?: boolean;
+  domainAccessContact?: string;
+  hasEmailPlatform?: boolean;
+  emailPlatform?: string;
+  emailPlatformOther?: string;
+  marketingEmail?: string;
+  hasEmailAdminAccess?: boolean;
+  emailAdminContact?: string;
+  // Onboarding: Content Approval
+  approverFirstName?: string;
+  approverLastName?: string;
+  approverEmail?: string;
+  approvalMethod?: string;
+  canSendWithoutApproval?: boolean;
 }
 
 export interface UpdateClientRequest {
   name?: string;
   industry?: string;
   timezone?: string;
+  accountManagerId?: string | null;
+  tier?: string | null;
+  contactEmail?: string | null;
   defaultFromName?: string;
   defaultFromEmail?: string;
   status?: string;
@@ -45,6 +81,7 @@ export interface ConnectionTestResult {
 export interface ClientsListParams {
   status?: string;
   platform?: string;
+  accountManagerId?: string;
   search?: string;
   page?: number;
   limit?: number;
@@ -96,6 +133,11 @@ export const clientsApi = {
     const response = await apiClient.post<ApiResponse<{ message: string; jobId: string }>>(
       `/clients/${id}/sync`
     );
+    return response.data.data;
+  },
+
+  listAccountManagers: async (): Promise<AccountManager[]> => {
+    const response = await apiClient.get<ApiResponse<AccountManager[]>>('/clients/account-managers');
     return response.data.data;
   },
 

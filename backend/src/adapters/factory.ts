@@ -3,6 +3,7 @@ import { MailchimpAdapter } from './mailchimp/MailchimpAdapter.js';
 import { KlaviyoAdapter } from './klaviyo/KlaviyoAdapter.js';
 import { ServiceTitanAdapter } from './servicetitan/ServiceTitanAdapter.js';
 import { BeehiivAdapter } from './beehiiv/BeehiivAdapter.js';
+import { ConstantContactAdapter } from './constantcontact/ConstantContactAdapter.js';
 import { PlatformCredentials } from './types.js';
 import { ValidationError } from '../utils/errors.js';
 
@@ -40,8 +41,8 @@ export function createPlatformAdapter(
       throw new ValidationError(`ActiveCampaign adapter not yet implemented`);
 
     case 'CONSTANT_CONTACT':
-      // TODO: Implement ConstantContactAdapter
-      throw new ValidationError(`Constant Contact adapter not yet implemented`);
+    case 'CONSTANTCONTACT':
+      return new ConstantContactAdapter(clientId, credentials);
 
     case 'BREVO':
       // TODO: Implement BrevoAdapter
@@ -79,7 +80,7 @@ export function isPlatformSupported(platform: string): boolean {
  * Check if a platform adapter is fully implemented
  */
 export function isPlatformImplemented(platform: string): boolean {
-  const implemented = ['MAILCHIMP'];
+  const implemented = ['MAILCHIMP', 'BEEHIIV', 'CONSTANT_CONTACT', 'CONSTANTCONTACT'];
   return implemented.includes(platform.toUpperCase());
 }
 
@@ -117,7 +118,7 @@ export function getRequiredCredentials(platform: string): string[] {
       return ['apiKey', 'accountUrl'];
 
     case 'CONSTANT_CONTACT':
-      return ['accessToken', 'refreshToken'];
+      return ['accessToken', 'refreshToken', 'clientId', 'clientSecret'];
 
     case 'BREVO':
       return ['apiKey'];
@@ -126,7 +127,10 @@ export function getRequiredCredentials(platform: string): string[] {
       return ['clientId', 'clientSecret', 'accessToken'];
 
     case 'BEEHIIV':
-      return ['apiKey'];
+      return ['apiKey', 'accountId'];
+
+    case 'CONSTANTCONTACT':
+      return ['accessToken', 'refreshToken', 'clientId', 'clientSecret'];
 
     default:
       return [];
