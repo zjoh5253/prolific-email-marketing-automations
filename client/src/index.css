@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Scrollbar styling for pipeline */
+.pipeline-columns::-webkit-scrollbar {
+  height: 8px;
+}
+.pipeline-columns::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
